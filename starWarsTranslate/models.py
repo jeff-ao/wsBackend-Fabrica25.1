@@ -15,7 +15,7 @@ class Users(models.Model):
 class Translates(models.Model):
     language = models.CharField(max_length=255)
     text = models.TextField()
-    translatedText = models.TextField()
+    translatedText = models.TextField(null=True,blank=True)
     user_id = models.ForeignKey(Users, on_delete=models.CASCADE)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)

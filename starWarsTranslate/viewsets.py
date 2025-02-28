@@ -17,3 +17,29 @@ class UserViewSets(viewsets.ModelViewSet):
 class TranslatesViewSets(viewsets.ModelViewSet):
     queryset = Translates.objects.all()
     serializer_class = TranslatesSerializer
+
+    def create(self, request):
+        language = request.data.get('language')
+        text = request.data.get('text')
+        user_id = request.data.get('user_id')
+
+        if not all([language, text, user_id]):
+            return Response({"error": "language, text e user_id são obrigatórios."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = Users.objects.get(id=user_id)
+        except Users.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        translatedText = consultaAPI(language, text)
+
+        translate_instance = Translates.objects.create(
+            language=language,
+            text=text,
+            translatedText=translatedText,
+            user_id=user,
+        )
+
+        serializer = self.get_serializer(translate_instance)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
