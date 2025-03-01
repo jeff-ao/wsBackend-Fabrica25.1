@@ -19,14 +19,14 @@ A **Star Wars Translate API** é uma API REST desenvolvida com **Django Rest Fra
 - **Framework**: Django 5.1.6 + Django REST Framework
 - **Banco de Dados**: SQLite (padrão)
 - **Autenticação**: Email e senha (hash de senha utilizando Django's `make_password`)
-- **Container**: Docker
+- **Containers**: Docker + Docker Compose
 - **Tradução**: API externa `funtranslations.com`
 
 ## Como Executar o Projeto
 
 ### Requisitos
 
-- **Docker** instalado
+- **Docker** e **Docker compose** instalados
 
 ### Passos
 
@@ -38,26 +38,22 @@ A **Star Wars Translate API** é uma API REST desenvolvida com **Django Rest Fra
 
    entre no diretório
 
-2. Construa e inicie o container Docker:
+2. Construa e inicie os containers Docker:
 
    ```sh
-   docker build -t starwarstranslate .
-   docker run -p 8000:8000 starwarstranslate
-   docker exec -it NOME-DO-CONATINER bash
-   root@xxxxxxxxxxxx:/starWarsTranslate# python manage.py migrate
-   ```
-
-2.1. Para descobrir o nome do Container, é só dar comando:
-
-   ```sh
+   docker-compose build -d
    docker ps
    ```
 
-   vai aparecer algo assim:
+   Vai aparecer algo assim:
 
    ```sh
    CONTAINER ID   IMAGE               COMMAND                  CREATED              STATUS              PORTS                    NAMES
    xxxxxxxxxxxx   starwarstranslate   "python manage.py ru…"   About a minute ago   Up About a minute   0.0.0.0:8000->8000/tcp   NOME-DO-CONTAINER
+
+   docker exec -it NOME-DO-CONATINER bash
+
+   root@xxxxxxxxxxxx:/starWarsTranslate# python manage.py migrate
    ```
 
 3. A API estará rodando em: `http://localhost:8000/api/`
