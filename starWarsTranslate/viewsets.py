@@ -28,6 +28,9 @@ class UserViewSets(viewsets.ModelViewSet):
         if not isinstance(email, str) or len(email) > 255:
             return Response({"error": "Email inválido"}, status=status.HTTP_400_BAD_REQUEST)
         
+        if '@' not in email or '.' not in email.split('@')[-1]:
+            return Response({"error": "Email inválido"}, status=status.HTTP_400_BAD_REQUEST)
+        
         try:
             Users.objects.get(email=email)
             return Response({"error": "Email já cadastrado"}, status=status.HTTP_400_BAD_REQUEST)
