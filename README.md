@@ -26,7 +26,7 @@ A **Star Wars Translate API** é uma API REST desenvolvida com **Django Rest Fra
 
 ### Requisitos
 
-- **Docker** instalado
+- **Docker** e **Docker compose** instalados
 
 ### Passos
 
@@ -40,8 +40,7 @@ A **Star Wars Translate API** é uma API REST desenvolvida com **Django Rest Fra
 
 2. Construa e inicie os containers Docker:
    ```sh
-   docker build -t starwarstranslate .
-   docker run -p 8000:8000 starwarstranslate
+   docker-compose build -d
    ```
 3. A API estará rodando em: `http://localhost:8000/api/`
 
