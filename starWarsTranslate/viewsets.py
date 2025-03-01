@@ -1,4 +1,6 @@
 from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from django.contrib.auth.hashers import make_password,check_password
 from rest_framework.response import Response
 import requests
 from .models import Users, Translates
@@ -26,6 +28,12 @@ class UserViewSets(viewsets.ModelViewSet):
         if not isinstance(email, str) or len(email) > 255:
             return Response({"error": "Email inválido"}, status=status.HTTP_400_BAD_REQUEST)
         
+        try:
+            Users.objects.get(email=email)
+            return Response({"error": "Email já cadastrado"}, status=status.HTTP_400_BAD_REQUEST)
+        except Users.DoesNotExist:
+            pass
+        
         if not isinstance(password, str) or len(password) > 255:
             return Response({"error": "Senha inválida"}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -35,7 +43,7 @@ class UserViewSets(viewsets.ModelViewSet):
         user_instance = Users.objects.create(
             name=name,
             email=email,
-            password=password
+            password=make_password(password)
         )
 
         serializer = self.get_serializer(user_instance)
@@ -50,6 +58,22 @@ class UserViewSets(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['post'], url_path='login')
+    def login(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        
+        if not email or not password:
+            return Response({"error": "email e password são obrigatórios."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user = Users.objects.filter(email=email).first()
+        
+        if user is None or not check_password(password, user.password):
+            return Response({"error": "Email ou senha incorretos."}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        return Response({"message": "Login bem-sucedido", "user_id": user.id}, status=status.HTTP_200_OK)
+        
     
 class TranslatesViewSets(viewsets.ModelViewSet):
     queryset = Translates.objects.all()
