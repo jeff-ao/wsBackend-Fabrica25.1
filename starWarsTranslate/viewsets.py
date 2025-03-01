@@ -13,6 +13,44 @@ class UserViewSets(viewsets.ModelViewSet):
     queryset = Users.objects.all()
     serializer_class = UserSerializer
     
+    def create(self, request):
+        name = request.data.get('name')
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        if not all([name, email, password]):
+            return Response({"error": "name, email e password são obrigatórios."}, status=status.HTTP_400_BAD_REQUEST)
+        if not isinstance(name, str) or len(name) > 255:
+            return Response({"error": "Nome inválido"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not isinstance(email, str) or len(email) > 255:
+            return Response({"error": "Email inválido"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not isinstance(password, str) or len(password) > 255:
+            return Response({"error": "Senha inválida"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if len(password) < 8 or not any(char.isdigit() for char in password) or not any(char.isupper() for char in password) or not any(char in "!@#$%^&*()-_=+[]{}|;:'\",.<>?/`~" for char in password):
+            return Response({"error": "Senha deve ter pelo menos 8 caracteres, 3 números, uma letra maiúscula e um caractere especial"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user_instance = Users.objects.create(
+            name=name,
+            email=email,
+            password=password
+        )
+
+        serializer = self.get_serializer(user_instance)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def retrieve(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        try:
+            user = Users.objects.get(id=pk)
+        except Users.DoesNotExist:
+            return Response({"error": "Usuário não encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
 class TranslatesViewSets(viewsets.ModelViewSet):
     queryset = Translates.objects.all()
     serializer_class = TranslatesSerializer
