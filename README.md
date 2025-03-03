@@ -6,12 +6,12 @@ A **Star Wars Translate API** é uma API REST desenvolvida com **Django Rest Fra
 
 ### Idiomas Disponíveis:
 
-- **Cheunh**
-- **Gungan**
-- **Huttese**
-- **Mandalorian**
-- **Sith**
-- **Yoda**
+- **cheunh**
+- **gungan**
+- **huttese**
+- **mandalorian**
+- **sith**
+- **yoda**
 
 ## Tecnologias Utilizadas
 
