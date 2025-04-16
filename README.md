@@ -26,10 +26,9 @@ A **Star Wars Translate API** é uma API REST desenvolvida com **Django Rest Fra
 
 ### Requisitos:
 
-- **Docker** e **Docker compose** instalados
+- **Docker Engine** instalado
  ### Extensões:
-  - Excalidraw (Opciona)
-  - 
+  - Excalidraw (Opcional)
 
 ### Passos
 
